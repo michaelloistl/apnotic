@@ -1,11 +1,10 @@
 require 'apnotic/abstract_notification'
 
 module Apnotic
-
   class Notification < AbstractNotification
-    attr_accessor :alert, :badge, :sound, :content_available, :category, :custom_payload, :url_args, :mutable_content, :thread_id
-    attr_accessor :target_content_id, :interruption_level, :relevance_score
-    attr_accessor :stale_date, :content_state, :timestamp, :event, :dismissal_date
+    attr_accessor :alert, :badge, :sound, :content_available, :category, :custom_payload, :url_args, :mutable_content,
+                  :thread_id, :custom_headers, :target_content_id, :interruption_level, :relevance_score, :stale_date,
+                  :content_state, :timestamp, :event, :dismissal_date
 
     def background_notification?
       aps.count == 1 && aps.key?('content-available') && aps['content-available'] == 1
@@ -15,10 +14,10 @@ module Apnotic
 
     def aps
       {}.tap do |result|
-        result.merge!(alert: alert) if alert
-        result.merge!(badge: badge) if badge
-        result.merge!(sound: sound) if sound
-        result.merge!(category: category) if category
+        result.merge!(alert:) if alert
+        result.merge!(badge:) if badge
+        result.merge!(sound:) if sound
+        result.merge!(category:) if category
         result.merge!('content-available' => content_available) if content_available
         result.merge!('url-args' => url_args) if url_args
         result.merge!('mutable-content' => mutable_content) if mutable_content
@@ -35,7 +34,7 @@ module Apnotic
     end
 
     def to_hash
-      { aps: aps }.tap do |result|
+      { aps: }.tap do |result|
         result.merge!(custom_payload) if custom_payload
       end
     end
